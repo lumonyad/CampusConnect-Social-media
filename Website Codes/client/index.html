@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>CampusConnect</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+  <!-- ===== FULLSCREEN LOGIN ===== -->
+  <section id="login-screen" class="auth-screen">
+    <div class="login-box">
+      <h1>CampusConnect</h1>
+      <input id="login-email" type="email" placeholder="Student Email" />
+      <input id="login-password" type="password" placeholder="Password" />
+      <div id="login-error" class="auth-error"></div>
+
+      <button id="login-btn" type="button">Login</button>
+
+      <p class="divider">──────── or ────────</p>
+
+      <button class="secondary-btn" type="button" onclick="showRegisterBox()">
+        Create Account
+      </button>
+    </div>
+  </section>
+
+
+  <section id="register-screen" class="auth-screen" style="display:none;">
+    <div class="login-box">
+      <h2>Create Account</h2>
+
+      <input id="reg-username" type="text" placeholder="Username" />
+      <input id="reg-email" type="email" placeholder="Student Email" />
+      <input id="reg-password" type="password" placeholder="Password" />
+
+      <div id="reg-msg" class="auth-error"></div>
+
+      <div class="auth-actions">
+        <button class="primary-btn" type="button" onclick="registerUser()">
+          Create Account
+        </button>
+
+        <button class="secondary-btn" type="button" onclick="hideRegisterBox()">
+          Back to Login
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN APP -->
+  <section id="main-app" style="display:none;">
+
+    <header class="top-nav">
+      <div class="nav-left">
+        <label for="branch-select" class="branch-label">Branch:</label>
+        <select id="branch-select" class="branch-select">
+          <option value="main">Dubai Campus</option>
+          <option value="london">London Campus</option>
+          <option value="mauritius">Mauritius Campus</option>
+        </select>
+      </div>
+
+      <div class="nav-center">
+        <button id="new-post-btn" class="plus-btn">+</button>
+      </div>
+
+      <div class="nav-right">
+        <div class="search-wrapper">
+          <input id="search-input" type="text" class="search-input" placeholder="Search students..." />
+          <div id="user-search-results" class="search-results"></div>
+        </div>
+
+        <button id="dm-btn" class="icon-btn" title="messages">💬</button>
+        <button id="logout-btn" class="logout-btn">Logout</button>
+      </div>
+    </header>
+
+    <main class="page">
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <h2 class="sidebar-title">Notifications</h2>
+          <p id="notifications-bar" class="sidebar-subtitle">
+            No new notifications.
+          </p>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-header-row">
+            <h2 class="sidebar-title">Societies</h2>
+            <button id="create-society-btn" class="small-btn">+ Create</button>
+          </div>
+          <p class="sidebar-subtitle">Available </p>
+          <ul id="society-list" class="society-list">
+          </ul>
+        </div>
+
+        <div class="sidebar-section">
+          <h2 class="sidebar-title">Your societies</h2>
+          <p class="sidebar-subtitle" id="my-societies-empty">
+            You haven't joined any societies yet.
+          </p>
+          <ul id="my-societies-list" class="society-list"></ul>
+        </div>
+      </aside>
+
+      <section class="feed">
+        <section class="events-section">
+          <h2> Weekly Events Near You</h2>
+          <p id="weather-info" class="sidebar-subtitle"></p>
+          <div id="events-list" class="events-list">
+            <article class="event-card">
+              <h3>Freshers Fair</h3>
+              <p>Main Campus • Friday 4PM</p>
+              <p class="event-desc">
+                Meet societies, grab freebies, network with other students.
+              </p>
+            </article>
+            <article class="event-card">
+              <h3>Coding Night</h3>
+              <p>City Campus • Saturday 7PM</p>
+              <p class="event-desc">
+                Bring your laptop and join a chill coding + pizza session.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="posts-section">
+          <div class="posts-header-row">
+            <h2>Campus Feed</h2>
+          </div>
+          <div id="feed-list" class="feed-list">
+
+          </div>
+        </section>
+      </section>
+
+      <aside class="right-panel">
+        <h2>My societies</h2>
+        <p class="sidebar-subtitle">
+          Societies you created and who has joined them.
+        </p>
+        <ul id="my-created-societies-list" class="society-list">
+        </ul>
+      </aside>
+
+    </main>
+
+    <!-- Bottom profile button -->
+    <footer class="bottom-bar">
+      <button id="profile-btn" class="profile-btn">
+        <span class="profile-emoji"></span>
+        <span id="profile-username-footer">@username</span>
+      </button>
+
+    </footer>
+
+    <!-- New Post modal -->
+    <div id="new-post-modal" class="modal hidden">
+      <div class="modal-content post-modal">
+        <div class="post-main-area">
+          <h2 class="modal-title">Create a new post</h2>
+          <p class="modal-subtitle">
+            Choose what kind of post you want to share with your campus.
+          </p>
+
+
+
+        </div>
+        <div class="post-modal-scroll">
+          <form id="new-post-form">
+            <div class="post-side-area">
+              <label class="modal-label">
+                Post type
+                <select id="post-type">
+                  <option value="standard">Standard update</option>
+                  <option value="event">Event</option>
+                  <option value="society">Society update</option>
+                </select>
+              </label>
+
+              <label class="modal-label">
+                Campus / Branch
+                <select id="branch-select">
+                  <option value="">All campuses</option>
+                  <option value="main">Main campus</option>
+                  <option value="north">North campus</option>
+                  <option value="city">City campus</option>
+                </select>
+              </label>
+
+              <label class="modal-label">
+                Text
+                <textarea id="post-text" rows="3"
+                  placeholder="Write a quick sentence, event details or update..."></textarea>
+              </label>
+
+              <label class="modal-label post-image-row">
+                Photo
+                <input id="post-image-url" type="url" placeholder="Paste an image link if you want to post a picture" />
+                <span class="post-or-text">or</span>
+                <input id="post-image-file" type="file" accept="image/*" />
+              </label>
+
+              <p id="post-error" class="auth-error"></p>
+
+
+              <div class="modal-actions">
+                <button id="close-modal-btn" class="secondary-btn">Cancel</button>
+                <button id="submit-post-btn" class="primary-btn">Post</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    </div>
+
+
+
+  </section> <!-- main-app -->
+
+  <div id="dm-panel" class="dm-panel hidden">
+    <div class="dm-panel-content">
+      <button id="dm-close-btn" class="close-btn">×</button>
+
+      <div class="dm-main-layout">
+        <aside class="dm-sidebar">
+          <h2 class="sidebar-title">Messages</h2>
+          <p class="sidebar-subtitle">
+            DMs only with students who follow you back.
+          </p>
+
+          <div id="dm-thread-list" class="dm-thread-list">
+            <p class="sidebar-subtitle">No conversations yet.
+            </p>
+          </div>
+        </aside>
+
+        <section class="dm-main">
+          <header class="dm-main-header">
+            <h3 id="dm-active-name">Start a conversation</h3>
+            <p id="dm-active-hint" class="sidebar-subtitle">
+              Choose a student from the left to start chatting.
+            </p>
+          </header>
+
+          <div id="dm-list" class="dm-list">
+            <p class="sidebar-subtitle">
+              No conversation selected.</p>
+          </div>
+
+          <form id="dm-compose-form" class="dm-compose">
+            <input id="dm-text-input" type="text" placeholder="Write a message…" autocomplete="off" />
+            <button type="submit" class="primary-btn">Send</button>
+          </form>
+        </section>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="profile-modal" class="modal hidden">
+    <style>
+      #profile-modal .profile-modal-content {
+        max-height: calc(100vh - 4rem);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-right: 0.25rem;
+      }
+
+      #profile-modal .profile-modal-content::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      #profile-modal .profile-modal-content::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      #profile-modal .profile-modal-content::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.15);
+        border-radius: 10px;
+      }
+
+      #profile-modal .profile-modal-content {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+      }
+    </style>
+    <div class="modal-content profile-modal-content">
+      <button id="profile-close-btn" class="close-btn">×</button>
+
+      <div class="profile-header">
+        <div id="profile-avatar" class="profile-avatar-large">👤</div>
+        <div>
+          <h2 id="profile-username">My profile</h2>
+          <p id="profile-stats" class="sidebar-subtitle"></p>
+        </div>
+      </div>
+
+      <div class="followers-section">
+        <h3 style="margin-top:1rem; margin-bottom:0.5rem;">Followers</h3>
+        <p id="followers-empty" class="sidebar-subtitle" style="display:none;"></p>
+        <ul id="followers-list" class="dm-list"></ul>
+      </div>
+
+
+      <label class="modal-label">
+        Bio
+        <textarea id="profile-bio" rows="2" placeholder="Tell other students a bit about you..."></textarea>
+      </label>
+
+      <div class="profile-actions">
+        <input id="profile-avatar-url" type="url" placeholder="Paste avatar image URL (optional)" />
+        <button id="profile-save-btn" class="primary-btn">
+          Save profile
+        </button>
+        <button id="profile-new-post-btn" class="secondary-btn">
+          New post
+        </button>
+      </div>
+
+      <h3 style="margin-top:1rem; margin-bottom:0.5rem;">Posts</h3>
+      <ul id="my-posts-list" class="feed-list"></ul>
+    </div>
+  </div>
+  <!-- Toast notifications -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <div id="confirm-modal" class="modal hidden">
+    <div class="modal-content small-modal">
+      <h2 class="modal-title">Are you sure?</h2>
+      <p id="confirm-message" class="modal-text"></p>
+      <div class="modal-actions">
+        <button id="confirm-cancel-btn" class="secondary-btn">Cancel</button>
+        <button id="confirm-ok-btn" class="primary-btn">Yes</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="society-modal" class="modal hidden">
+    <div class="modal-content small-modal">
+      <button id="society-close-btn" class="close-btn">×</button>
+      <h2 class="modal-title">Create a new society</h2>
+      <p class="modal-text">
+        Step 1: choose a name. Step 2: add a short description. Step 3: create
+        and it will appear in the Societies list.
+      </p>
+
+      <label class="modal-label">
+        Society name
+        <input id="society-name-input" type="text" placeholder="e.g. Football Society" />
+      </label>
+
+      <label class="modal-label">
+        Description
+        <textarea id="society-desc-input" rows="2" placeholder="Weekly training & matches..."></textarea>
+      </label>
+
+      <div class="modal-actions">
+        <button id="society-cancel-btn" class="secondary-btn">Cancel</button>
+        <button id="society-create-btn" class="primary-btn">
+          Create society
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="society-detail-modal" class="modal hidden">
+  <div class="modal-content small-modal">
+    <button id="society-detail-close-btn" class="close-btn">×</button>
+
+    <div class="profile-header">
+      <div class="profile-avatar-large">🏫</div>
+      <div>
+        <h2 id="society-detail-title">Society name</h2>
+        <p id="society-detail-meta" class="sidebar-subtitle"></p>
+      </div>
+    </div>
+
+    <p id="society-detail-description" class="modal-text" style="margin-top:0.75rem;">
+      Society description goes here...
+    </p>
+
+    <div class="modal-actions" style="margin-top:1rem;">
+      <button id="society-detail-join-btn" class="primary-btn">
+        Join society
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+  <script src="js/app.js"></script>
+  <script src="js/contents.js"></script>
+</body>
+
+</html>
